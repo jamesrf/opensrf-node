@@ -1,0 +1,25 @@
+{
+  "name": "opensrf",
+  "version": "0.0.1",
+  "description": "An OpenSRF client library",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jamesrf/opensrf-node.git"
+  },
+  "keywords": [
+    "opensrf"
+  ],
+  "author": "James Fournie",
+  "license": "GPLv2",
+  "devDependencies": {
+       "mocha": "",
+       "should": ""
+   }
+}
