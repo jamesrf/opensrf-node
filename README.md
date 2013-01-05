@@ -15,8 +15,12 @@ This is an OpenSRF client library for node.js.  It is based on the OpenSRF Javas
 
 There is no Fieldmapper as of yet, meaning what you get back from your Evergreen server will be a bit zany.
 
+
 ## Usage example
 
+
+
+```javascript
 var osrf = require('opensrf');
 
 var ses = new osrf.ClientSession('dev1.sitka.bclibraries.ca','open-ils.actor');
@@ -52,4 +56,4 @@ req.onresponse = function(r) {
 
 var res = req.send();
 
-
+```
