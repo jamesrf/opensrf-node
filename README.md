@@ -11,19 +11,20 @@ GNU General Public License for more details.
 
 # OpenSRF Node
 
-This is an OpenSRF client library for node.js.  It is based on the OpenSRF Javascript libraries by Bill Erickson.
+This is an OpenSRF client library for node.js.  It is based heavily on the OpenSRF Javascript libraries by Bill Erickson.
 
-There is no Fieldmapper as of yet, meaning what you get back from your Evergreen server will be a bit zany.
+## Todo
 
+* No Fieldmapper as of yet, meaning what you get back from your Evergreen server will be a bit zany.
+* No HTTPS as of yet
+* No XMPP, runs over the web and hence only can access services published to the world
 
 ## Usage example
-
-
 
 ```javascript
 var osrf = require('opensrf');
 
-var ses = new osrf.ClientSession('dev1.sitka.bclibraries.ca','open-ils.actor');
+var ses = new osrf.ClientSession('demo.evergreencatalog.com','open-ils.actor');
 
 var req = ses.request('open-ils.actor.org_tree.retrieve');
 
