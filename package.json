@@ -2,7 +2,7 @@
   "name": "opensrf",
   "version": "0.0.1",
   "description": "An OpenSRF client library",
-  "main": "lib/index.js",
+  "main": "lib/osrf.js",
   "directories": {
     "test": "test"
   },
