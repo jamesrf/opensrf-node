@@ -11,23 +11,24 @@ GNU General Public License for more details.
 
 # OpenSRF Node
 
-This is an OpenSRF client library for node.js.  It is based heavily on the OpenSRF Javascript libraries by Bill Erickson.
+This is an OpenSRF client library for node.js.  It is based heavily on the OpenSRF Javascript libraries by Bill Erickson, but has been simplified in some areas and made more compatible with nodejs.
+
+This runs only over websockets, I have removed the code for HTTP to simplify things.
 
 ## Todo
 
 * No Fieldmapper as of yet, meaning what you get back from your Evergreen server will be a bit zany.
-* No HTTPS as of yet
-* No XMPP, runs over the web and hence only can access services published to the world
+
+* Maybe implement something to capture all req promises and auto-close the websocket when they're done
 
 ## Usage example
 
 ```javascript
-var osrf = require('opensrf');
+var OpenSRF = require('./lib/index.js');
 
-var ses = new osrf.ClientSession('demo.evergreencatalog.com','open-ils.actor');
+var opts = { host: "demo.evergreencatalog.com", port:"7682"};
 
-var req = ses.request('open-ils.actor.org_tree.retrieve');
-
+// helper function to parse the flat/un-fieldmappered org tree
 var parseTree = function(tree) {
   var name = tree['__p'][6];
   var children = tree['__p'][0];
@@ -45,16 +46,15 @@ var parseTree = function(tree) {
     return {"name": name};
   }
 }
+var conn = new OpenSRF.Connection(opts);
+var ses = conn.NewSession("open-ils.actor");
+var req = ses.request('open-ils.actor.org_tree.retrieve');
 
-req.onresponse = function(r) {
-  var msg = r.recv();
-  var tree = msg.hash.content;
-  var n = parseTree(tree);
-  console.log(JSON.stringify(n));
-    
-    
-};
+// req is a promise
+req.then((t) => {
+    console.dir(parseTree(t));
 
-var res = req.send();
-
+    // connection must be manually closed when you're done
+    conn.close();
+});
 ```
