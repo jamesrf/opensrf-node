@@ -24,7 +24,7 @@ This runs only over websockets, I have removed the code for HTTP to simplify thi
 
 ## Usage example
 
-```npm install``
+```npm install```
 
 Then:
 
