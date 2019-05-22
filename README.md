@@ -17,44 +17,34 @@ This runs only over websockets, I have removed the code for HTTP to simplify thi
 
 ## Todo
 
-* No Fieldmapper as of yet, meaning what you get back from your Evergreen server will be a bit zany.
-
-* Maybe implement something to capture all req promises and auto-close the websocket when they're done
+* Cleanup
+* Tests
+* ???
 
 ## Usage example
+
+```npm install``
+
+Then:
 
 ```javascript
 var OpenSRF = require('./lib/index.js');
 
 var opts = { host: "demo.evergreencatalog.com", port:"7682"};
 
-// helper function to parse the flat/un-fieldmappered org tree
-var parseTree = function(tree) {
-  var name = tree['__p'][6];
-  var children = tree['__p'][0];
-
-  var newChildren = new Array();
-  
-  for (var x = 0; x <= children.length; x++){
-    if(children[x]){
-      newChildren[x] = parseTree(children[x]);
-    } 
-  }  
-  if(newChildren.length > 0){
-    return {"name": name, "children": newChildren};
-  } else {
-    return {"name": name};
-  }
-}
 var conn = new OpenSRF.Connection(opts);
 var ses = conn.NewSession("open-ils.actor");
 var req = ses.request('open-ils.actor.org_tree.retrieve');
 
 // req is a promise
 req.then((t) => {
-    console.dir(parseTree(t));
-
-    // connection must be manually closed when you're done
+    let parseTree = (ou) => {
+      ou.children().forEach( (child) => {
+        console.log(child.shortname());
+        parseTree(child);
+      });
+    };
+    parseTree(t);
     conn.close();
 });
 ```
