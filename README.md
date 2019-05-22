@@ -34,7 +34,7 @@ var OpenSRF = require('./lib/index.js');
 var opts = { host: "demo.evergreencatalog.com", port:"7682"};
 
 var conn = new OpenSRF.Connection(opts);
-var ses = conn.NewSession("open-ils.actor");
+var ses = conn.createSession("open-ils.actor");
 var req = ses.request('open-ils.actor.org_tree.retrieve');
 
 // req is a promise
