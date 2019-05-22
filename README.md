@@ -19,6 +19,7 @@ This runs only over websockets, I have removed the code for HTTP to simplify thi
 
 * Cleanup
 * Tests
+* Package for NPM
 * ???
 
 ## Usage example
