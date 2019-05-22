@@ -11,7 +11,7 @@ GNU General Public License for more details.
 
 # OpenSRF Node
 
-This is an OpenSRF client library for node.js.  It is based heavily on the OpenSRF Javascript libraries by Bill Erickson, but has been simplified in some areas and made more compatible with nodejs.
+This is an OpenSRF client library for node.js.  It is based heavily on the OpenSRF Javascript libraries by Bill Erickson, but has been simplified in some areas and made more compatible with nodejs.  The IDL code is mostly based on the Angular IDL service.
 
 This runs only over websockets, I have removed the code for HTTP to simplify things.
 
