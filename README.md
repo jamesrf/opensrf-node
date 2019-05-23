@@ -37,8 +37,14 @@ var conn = new OpenSRF.Connection(opts);
 var ses = conn.createSession("open-ils.actor");
 var req = ses.request('open-ils.actor.org_tree.retrieve');
 
-// req is a promise
-req.then((t) => {
+// req emits the following events:
+//  response
+//  complete
+//  error
+//  methoderror
+//  transporterror
+
+req.on("response",(t) => {
     let parseTree = (ou) => {
       ou.children().forEach( (child) => {
         console.log(child.shortname());
