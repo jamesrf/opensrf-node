@@ -1,6 +1,6 @@
 {
   "name": "opensrf",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An OpenSRF client library",
   "main": "lib/index.js",
   "directories": {
@@ -20,6 +20,7 @@
   "license": "GPL-2.0-only",
   "devDependencies": {
     "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "should": ""
   },
   "dependencies": {
