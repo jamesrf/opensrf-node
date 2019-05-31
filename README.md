@@ -1,48 +1,47 @@
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+# NodeJS OpenSRF -- OpenSRF Websockets Client
+[![npm package](https://nodei.co/npm/opensrf.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/opensrf/)
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+## Automate your Evergreen!
+OpenSRF is a nortoriously dense and confusing API.  This library is designed for libraries using a 3rd party hosted Evergreen instance to built tools to interact with Evergreen from the client side, such as:
+- scripting things
+- building simple web views
+- building simple CLI applications
 
+## NodeJS OpenSRF Library
 
-# OpenSRF Node
+This library is designed for client NodeJS applications to talk to Evergreen servers using OpenSRF over websockets.
 
-This is an OpenSRF client library for node.js.  It is based heavily on the OpenSRF Javascript libraries by Bill Erickson, but has been simplified in some areas and made more compatible with nodejs.  The IDL code is mostly based on the Angular IDL service.
+It is based heavily on the OpenSRF Javascript libraries by Bill Erickson, found in the [https://git.evergreen-ils.org/OpenSRF](OpenSRF Git Repo).  The IDL component has been derived from bits of the Angular IDL service.
+
+This client only works with websockets.  I have removed the code for other transports to simplify things.
 
 This runs only over websockets, I have removed the code for HTTP to simplify things.
 
-## Todo
+This doesn't work as as a server-side OpenSRF framework, although could be adapated to such.
 
-* Cleanup
-* Tests
-* Package for NPM
-* ???
+## Installation
 
-## Usage example
+```npm install opensrf```
 
-```npm install```
+## Usage Examples
+- [Basic Org Tree Example](#basic-org-tree-example)
+- [Promises](#promises-example)
 
-Then:
-
+## Basic API call
+The request method returns an EventEmitter which could fire the following events:
+- response
+- complete
+- error
+- methoderror
+- transporterror
 ```javascript
-var OpenSRF = require('./lib/index.js');
+var OpenSRF = require('opensrf');
 
 var opts = { host: "demo.evergreencatalog.com", port:"7682"};
 
 var conn = new OpenSRF.Connection(opts);
 var ses = conn.createSession("open-ils.actor");
 var req = ses.request('open-ils.actor.org_tree.retrieve');
-
-// req emits the following events:
-//  response
-//  complete
-//  error
-//  methoderror
-//  transporterror
 
 req.on("response",(t) => {
     let parseTree = (ou) => {
@@ -54,4 +53,59 @@ req.on("response",(t) => {
     parseTree(t);
     conn.close();
 });
+```
+
+## Promises Example
+The requestPromise method returns a promise instead of an EventEmitter.
+```javascript
+...
+var req = ses.requestPromise('open-ils.actor.org_tree.retrieve');
+req.then( (t) => {
+    let parseTree = (ou) => {
+      ou.children().forEach( (child) => {
+        console.log(child.shortname());
+        parseTree(child);
+      });
+    };
+    parseTree(t);
+    conn.close();
+}).catch( (e) => console.dir );
+```
+
+## Login Example
+The login method also returns a promise.
+
+```javascript
+var conn = new OpenSRF.Connection(opts);
+conn.login("username","password")
+  .then( (authtoken) => {
+     // do a request using authtoken here
+     // if you only need one auth session, you can put it in conn.authtoken for conveience
+  })
+ .catch( (e) => {
+   // handle errors
+ })
+```
+
+
+## Pcrud Example
+The login method also returns a promise.
+
+```javascript
+var conn = new OpenSRF.Connection(opts);
+
+
+conn.login("username","password")
+  .then( (authtoken) => {
+
+    var pcrud = conn.createPcrud(authToken);
+    pcrud.retrieve("aou",1).then(
+
+    )
+     // do a request using authtoken here
+     // if you only need one auth session, you can put it in conn.authtoken for conveience
+  })
+ .catch( (e) => {
+   // handle errors
+ })
 ```
