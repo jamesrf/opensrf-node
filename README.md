@@ -2,7 +2,7 @@
 [![npm package](https://nodei.co/npm/opensrf.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/opensrf/)
 
 ## Automate your Evergreen!
-OpenSRF is a nortoriously dense and confusing API.  This library is designed for libraries using a 3rd party hosted Evergreen instance to built tools to interact with Evergreen from the client side, such as:
+OpenSRF is a dense and confusing API.  This library is designed for libraries using a 3rd party hosted Evergreen instance to built tools to interact with Evergreen from the client side, such as:
 - scripting things
 - building simple web views
 - building simple CLI applications
@@ -41,44 +41,44 @@ var opts = { host: "demo.evergreencatalog.com", port:"7682"};
 
 var conn = new OpenSRF.Connection(opts);
 var ses = conn.createSession("open-ils.actor");
+
+// parses the org tree and prints the shortname of each org unit
+let parseTree = function(ou) {
+    ou.children().forEach( function(child) {
+      console.log(child.shortname());
+      parseTree(child);
+    });
+};
+// to call more complex methods use an argument object like:
+// {"method":"open-ils.something", "params":[authtoken, 123, etc]}
 var req = ses.request('open-ils.actor.org_tree.retrieve');
 
-req.on("response",(t) => {
-    let parseTree = (ou) => {
-      ou.children().forEach( (child) => {
-        console.log(child.shortname());
-        parseTree(child);
-      });
-    };
+req.on("response", function(tree) {
     parseTree(t);
-    conn.close();
+    conn.close(); // close the connection when you're done
 });
 ```
 
 ## Promises Example
 The requestPromise method returns a promise instead of an EventEmitter.
 ```javascript
-...
+//... create connection and session first, then:
 var req = ses.requestPromise('open-ils.actor.org_tree.retrieve');
-req.then( (t) => {
-    let parseTree = (ou) => {
-      ou.children().forEach( (child) => {
-        console.log(child.shortname());
-        parseTree(child);
-      });
-    };
+
+req.then( function(t) => {
     parseTree(t);
     conn.close();
-}).catch( (e) => console.dir );
+}).catch( function(e){
+  console.error(e);
+});
 ```
 
 ## Login Example
-The login method also returns a promise.
+The connection object has a convenience login method which returns a promise.
 
 ```javascript
-var conn = new OpenSRF.Connection(opts);
 conn.login("username","password")
-  .then( (authtoken) => {
+  .then( function(authtoken){
      // do a request using authtoken here
      // if you only need one auth session, you can put it in conn.authtoken for conveience
   })
@@ -87,25 +87,63 @@ conn.login("username","password")
  })
 ```
 
+## IDL Example
+To create IDL objects, access the IDL via the OpenSRF Connection.  It will pull down and generate
+The IDL from /IDL2js based on your connection hostname.
+```javascript
+var myAou = conn.IDL.create("aou");
+myAou.shortname("FOOBAR");
+myAou.name("Foobar Library");
+```
 
-## Pcrud Example
-The login method also returns a promise.
+## Pcrud Search Example 
+The connection object also can create a handy pcrud session
 
 ```javascript
-var conn = new OpenSRF.Connection(opts);
-
-
 conn.login("username","password")
-  .then( (authtoken) => {
+  .then( function(authtoken) {
 
     var pcrud = conn.createPcrud(authToken);
-    pcrud.retrieve("aou",1).then(
+    var query = {"id":1}
 
+    pcrud.search("aou",query)
+      .then(function(result){
+        // do something with the results
+      }
+      .catch(function(err){
+        // handle errors from the pcrud method
+      })
     )
-     // do a request using authtoken here
-     // if you only need one auth session, you can put it in conn.authtoken for conveience
-  })
+ })
  .catch( (e) => {
-   // handle errors
+   // handle errors from the login method
+ })
+```
+
+## Pcrud Write Example 
+You can also use pcrud to update records
+
+```javascript
+conn.login("username","password")
+  .then( function(authtoken) {
+
+    var pcrud = conn.createPcrud(authToken);
+    var query = {"id":1}
+
+    var commit = function(){ pcrud.commit(); conn.close(); }
+    var rollback = function(){ pcrud.rollback(); conn.close(); }
+
+    var createAou = function(){
+      pcrud.create(myAou)
+        .then(commit)
+        .catch(rollback);
+    }
+
+    pcrud.begin()
+      .then( createAou )
+      .catch( rollback );
+ })
+ .catch( (e) => {
+   // handle errors from the login method
  })
 ```
