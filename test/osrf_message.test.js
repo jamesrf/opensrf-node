@@ -1,59 +1,69 @@
 var osrfMessage = require('../lib/osrf_message');
+var assert = require('assert');
 
-// var jstz = require('jstz');
+describe('osrfMessage', function(){
+    it('should create', function(){
+        let msg = new osrfMessage({});
+    })
+    it('should only set a threadtrace if it has a single arg', function(){
+        let msg = new osrfMessage({});
+        msg.threadTrace("abc","def");
+        assert.equal(msg.hash.threadTrace, null)
+        msg.threadTrace("abc");
+        assert.equal(msg.hash.threadTrace, "abc")
+    })
+    it('should only set a type if it has a single arg', function(){
+        let msg = new osrfMessage({});
+        msg.type("abc","def");
+        assert.equal(msg.hash.type, null)
+        msg.type ("abc");
+        assert.equal(msg.hash.type, "abc")
+    })
+    it('should only set a payload if it has a single arg', function(){
+        let msg = new osrfMessage({});
+        msg.payload("abc","def");
+        assert.equal(msg.hash.payload, null)
+        msg.payload("abc");
+        assert.equal(msg.hash.payload, "abc")
+    })
+    it('should only set a threadtrace if it has a single arg', function(){
+        let msg = new osrfMessage({});
+        msg.locale("abc","def");
+        assert.equal(msg.hash.locaale, null)
+        msg.locale("abc");
+        assert.equal(msg.hash.locale, "abc")
+    })
+    it('should only set a tz if it has a single arg', function(){
+        let msg = new osrfMessage({});
+        let defTz = msg.hash.tz;
+        msg.tz("abc","def");
+        assert.equal(msg.hash.tz, defTz);
+        msg.tz("abc");
+        assert.equal(msg.hash.tz, "abc")
+    })
+    it('should only set a api_level if it has a single arg', function(){
+        let msg = new osrfMessage({});
+        msg.api_level("abc","def");
+        assert.equal(msg.hash.api_level, null)
+        msg.api_level("abc");
+        assert.equal(msg.hash.api_level, "abc")
+    })
+    it('should serialize', function() {
+        function payload(){
+            this.serialize = function(){ return "foobar" }
+        }
+        let hash = {
+            "threadTrace":1,
+            "type":"foo",
+            "payload":new payload(),
+            "locale":"en-CA",
+            "tz":"America/Vancouver",
+            "api_level":"1"
+        }
+        let msg = new osrfMessage( hash );
+        let sMsg = msg.serialize();
+        hash["payload"] = hash["payload"] = "foobar";
 
-// function osrfMessage(hash) {
-//     this.hash = hash;
-//     if(!this.hash.locale)
-//         this.hash.locale = 'en-US';
-//     if(!this.hash.tz)
-//         this.hash.tz = jstz.determine().name()
-//     this._encodehash = true;
-// }
-// osrfMessage.prototype.threadTrace = function(d) { 
-//     if(arguments.length == 1) 
-//         this.hash.threadTrace = d; 
-//     return this.hash.threadTrace; 
-// };
-// osrfMessage.prototype.type = function(d) { 
-//     if(arguments.length == 1) 
-//         this.hash.type = d; 
-//     return this.hash.type; 
-// };
-// osrfMessage.prototype.payload = function(d) { 
-//     if(arguments.length == 1) 
-//         this.hash.payload = d; 
-//     return this.hash.payload; 
-// };
-// osrfMessage.prototype.locale = function(d) { 
-//     if(arguments.length == 1) 
-//         this.hash.locale = d; 
-//     return this.hash.locale; 
-// };
-// osrfMessage.prototype.tz = function(d) { 
-//     if(arguments.length == 1) 
-//         this.hash.tz = d; 
-//     return this.hash.tz; 
-// };
-// osrfMessage.prototype.api_level = function(d) { 
-//     if(arguments.length == 1) 
-//         this.hash.api_level = d; 
-//     return this.hash.api_level; 
-// };
-// osrfMessage.prototype.serialize = function() {
-//     return {
-//         "__c":"osrfMessage",
-//         "__p": {
-//             'threadTrace' : this.hash.threadTrace,
-//             'type' : this.hash.type,
-//             'payload' : (this.hash.payload) ? this.hash.payload.serialize() : 'null',
-//             'locale' : this.hash.locale,
-//             'tz' : this.hash.tz,
-//             'api_level' : this.hash.api_level
-//         }
-//     };
-// };
-
-
-
-// module.exports = osrfMessage;
+        assert.deepEqual(sMsg, {"__c":"osrfMessage","__p":hash})
+    })
+})

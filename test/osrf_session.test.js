@@ -10,13 +10,14 @@ function mockConn(){
     this.locale = "en-CA";
     this.send = function(){}
     this.connect = function(){}
+    this.websocketConnection = true;
     this.osrfJSON = new mockJson();
 }
 
 let conn = new mockConn();
 
 function mockMsg(){
-    this.serialize = function(){}
+    this.serialize = function(){};
 }
 let msg = new mockMsg();
 
@@ -30,15 +31,24 @@ describe('session', function(){
         assert.equal(ses.state, constants.OSRF_APP_SESSION_DISCONNECTED)
     })
     it('should send', function(){
+        mockConn.send = function(m){ assert.ok }
         ses.send(msg);
     })
     it('should connect', function(){
-        ses.connect()
+        
+        ses.onconnect = function(){ assert.ok(1) }
+        conn.send = function(){ ses.onconnect(); }
+        
+        var p = ses.connect();
+        ses.onconnect();
+        p.then( () => { assert.ok(1) } )
+          .catch( () => { assert.fail() } );
     })
-    it('should send reqs', function(){
-        var x = ses.requestPromise("foo","bar").then( () => 
-            assert.ok).cach( assert.fail )
-    })
+    // it('should send reqs', function(){
+    //     var x = ses.requestPromise("foo","bar")
+    //         .then( assert.ok )
+    //         .catch( assert.fail );
+    // })
 })
 
 // osrfSession.prototype.cleanup = function() {
