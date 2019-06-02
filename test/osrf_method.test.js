@@ -1,27 +1,44 @@
 var osrfMethod = require('../lib/osrf_method');
+var assert = require('assert');
 
-// function osrfMethod(hash) {
-//     this.hash = hash;
-//     this._encodehash = true;
-// }
-// osrfMethod.prototype.method = function(d) {
-//     if(arguments.length == 1) 
-//         this.hash.method = d; 
-//     return this.hash.method; 
-// };
-// osrfMethod.prototype.params = function(d) {
-//     if(arguments.length == 1) 
-//         this.hash.params = d; 
-//     return this.hash.params; 
-// };
-// osrfMethod.prototype.serialize = function() {
-//     return {
-//         "__c":"osrfMethod",
-//         "__p": {
-//             'method' : this.hash.method,
-//             'params' : this.hash.params
-//         }
-//     };
-// };
+describe('osrfMethod', function(){
 
-// module.exports = osrfMethod;
+    it('should create', function(){
+        var o = new osrfMethod({})
+    })
+    it('should have a method', function() {
+        var o = new osrfMethod({})
+        o.method("foo");
+        assert(o.hash.method, "foo");
+    });
+    it('should reject array params', function() {
+        var o = new osrfMethod({});
+        o.method("foo");
+        o.method("bar","baz");
+        assert(o.hash.method, "foo");
+    });
+    it('should have a params', function() {
+        var o = new osrfMethod({})
+        o.params("foo");
+        assert(o.hash.params, "foo");
+    });
+    it('should reject array params', function() {
+        var o = new osrfMethod({});
+        o.params("foo");
+        o.params("bar","baz");
+        assert(o.hash.params, "foo");
+    });
+    it('should serialize', function(){
+        var o = new osrfMethod({});
+        o.method("foo");
+        o.params("bar");
+        var s = o.serialize();
+        assert.deepEqual(
+            {"__c":"osrfMethod",
+             "__p": {
+                "method": "foo",
+                "params": "bar"
+             }
+            }, s );
+    })
+});
