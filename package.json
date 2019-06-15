@@ -1,6 +1,6 @@
 {
   "name": "opensrf",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "An OpenSRF client library",
   "main": "lib/index.js",
   "directories": {
@@ -26,8 +26,6 @@
   },
   "dependencies": {
     "jstz": "^2.1.1",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
     "ws": "^7.0.0"
   }
 }
