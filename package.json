@@ -21,8 +21,7 @@
   "devDependencies": {
     "mocha": "^6.1.4",
     "nock": "^10.0.6",
-    "nyc": "^14.1.1",
-    "should": ""
+    "nyc": "^14.1.1"
   },
   "dependencies": {
     "jstz": "^2.1.1",
