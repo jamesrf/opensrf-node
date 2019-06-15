@@ -1,5 +1,6 @@
 # NodeJS OpenSRF -- OpenSRF Websockets Client
 [![npm package](https://nodei.co/npm/opensrf.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/opensrf/)
+[![Build Status](https://travis-ci.com/jamesrf/opensrf-node.svg?branch=master)](https://travis-ci.com/jamesrf/opensrf-node)
 
 ## Automate your Evergreen!
 OpenSRF is a dense and confusing API.  This library is designed for libraries using a 3rd party hosted Evergreen instance to built tools to interact with Evergreen from the client side, such as:
