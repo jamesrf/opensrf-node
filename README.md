@@ -12,7 +12,7 @@ OpenSRF is a dense and confusing API.  This library is designed for libraries us
 
 This library is designed for client NodeJS applications to talk to Evergreen servers using OpenSRF over websockets.
 
-It is based heavily on the OpenSRF Javascript libraries by Bill Erickson, found in the [https://git.evergreen-ils.org/OpenSRF](OpenSRF Git Repo).  The IDL component has been derived from bits of the Angular IDL service.
+It is based heavily on the OpenSRF Javascript libraries by Bill Erickson, found in the [OpenSRF Git Repo](https://git.evergreen-ils.org/OpenSRF).  The IDL component has been derived from bits of the Angular IDL service.
 
 This client only works with websockets.  I have removed the code for other transports to simplify things.
 
@@ -25,8 +25,13 @@ This doesn't work as as a server-side OpenSRF framework, although could be adapa
 ```npm install opensrf```
 
 ## Usage Examples
-- [Basic Org Tree Example](#basic-org-tree-example)
+- [Basic Org Tree Example](#basic-api-call)
 - [Promises](#promises-example)
+- [Login](#login-example)
+- [IDL](#idl-example)
+- [Pcrud Search](#pcrud-search-example)
+- [Pcrud Write](#pcrud-write-example)
+
 
 ## Basic API call
 The request method returns an EventEmitter which could fire the following events:
